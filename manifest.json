@@ -1,0 +1,17 @@
+{
+  "name": "Alfa Course",
+  "version": "1.0",
+  "description": "Alfa course!",
+  "manifest_version": 2,
+  "background": {
+    "page": "background/background.html",
+    "persistent": true
+  },
+
+  "browser_action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "asset/icon-16.png"
+    }
+  }
+}

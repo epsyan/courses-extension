@@ -4,14 +4,14 @@
   "description": "Alfa course!",
   "manifest_version": 2,
   "background": {
-    "page": "dist/background/background.html",
+    "page": "public/background.html",
     "persistent": true
   },
 
   "browser_action": {
-    "default_popup": "dist/popup/popup.html",
+    "default_popup": "public/popup.html",
     "default_icon": {
-      "16": "asset/icon-16.png"
+      "16": "public/asset/icon-16.png"
     }
   }
 }

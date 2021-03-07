@@ -2,7 +2,7 @@
   "name": "alfa-course",
   "version": "1.0.0",
   "description": "",
-  "main": "src/background/background.ts",
+  "main": "src/background.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

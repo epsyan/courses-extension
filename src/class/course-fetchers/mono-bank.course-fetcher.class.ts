@@ -1,6 +1,6 @@
-import { CourseFetcherClass } from './course-fetcher.class';
-import { Course } from '../interface/course.interface';
-import { rParseFloat } from '../util/utils';
+import { CourseFetcherClass } from '../course-fetcher.class.js';
+import { Course } from '../../interface/course.interface';
+import { rParseFloat } from '../../util/utils.js';
 
 const UAH_CURRENCY_CODE = 980;
 const USD_CURRENCY_CODE = 840;
@@ -15,7 +15,7 @@ type MonoCourse = {
 export class MonoBankCourseFetcher extends CourseFetcherClass {
     name = 'MonoBank';
     url = 'https://api.monobank.ua/bank/currency';
-    icon = '../asset/mono.jpg';
+    icon = '../public/asset/mono.jpg';
 
     async fetchCourse(): Promise<Course | void> {
         const response = await fetch(this.url);

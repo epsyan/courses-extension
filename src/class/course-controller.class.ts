@@ -32,14 +32,14 @@ export class CourseController {
             console.error('Failed to fetch course');
             console.log(e);
         } finally {
-            setTimeout(() => this.pollCourse(), POLL_TIMEOUT);
+            setTimeout(this.pollCourse.bind(this), POLL_TIMEOUT);
         }
     }
 
     processFulfilledCourses(courses: Course[], isRejectedPromisesExist: boolean): void {
         if (courses.length === 0) return;
 
-        courses.forEach(this.logCourse.bind(this)); // TODO: why bind?
+        courses.forEach(this.logCourse);
         this.setCourse(courses[0], isRejectedPromisesExist);
     }
 
@@ -67,7 +67,7 @@ export class CourseController {
         setBadge(sellCourse.toString(), badgeColor, icon, circleColor);
     }
 
-    logCourse({ name, sellCourse }: Course) {
+    logCourse({ name, sellCourse }: Course): void {
         const dateTime = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
 
         console.group(name);

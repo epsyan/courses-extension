@@ -1,8 +1,7 @@
 import { CourseFetcherClass } from '../course-fetcher.class.js';
 import { Course } from '../../interface/course.interface';
 import { isDefined } from '../../util/utils.js';
-
-const USD_CURRENCY_CODE = 'USD';
+import { USD_CURRENCY_CODE } from '../../const.js';
 
 type NBUCourse = {
     rate: number;

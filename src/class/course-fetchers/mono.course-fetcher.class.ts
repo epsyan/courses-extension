@@ -1,6 +1,6 @@
 import { CourseFetcherClass } from '../course-fetcher.class.js';
 import { Course } from '../../interface/course.interface';
-import { rParseFloat } from '../../util/utils.js';
+import { isDefined } from '../../util/utils.js';
 
 const UAH_CURRENCY_CODE = 980;
 const USD_CURRENCY_CODE = 840;
@@ -18,30 +18,20 @@ export class MonoBankCourseFetcher extends CourseFetcherClass {
     icon = '../public/asset/mono.jpg';
 
     async fetchCourse(): Promise<Course | void> {
-        const response = await fetch(this.url);
-
-        if (!response.ok) {
-            this.throwFetchError(`status ${response.status} given`);
-        }
-
+        const response = await this.fetchAndCheckResponse();
         const responseJson: MonoCourse[] = await response.json();
         const course = responseJson.find(
             ({ currencyCodeA, currencyCodeB }) =>
-                currencyCodeA === USD_CURRENCY_CODE &&
-                currencyCodeB === UAH_CURRENCY_CODE
+                currencyCodeA === USD_CURRENCY_CODE && currencyCodeB === UAH_CURRENCY_CODE
         );
 
-        if (MonoBankCourseFetcher.isMonoCourse(course)) {
+        if (isDefined(course)) {
             return this.createCourseResponse({
-                buyCourse: rParseFloat(course.rateBuy),
-                sellCourse: rParseFloat(course.rateSell),
+                buyCourse: course.rateBuy,
+                sellCourse: course.rateSell,
             });
         }
 
         this.throwFetchError('No course found');
-    }
-
-    private static isMonoCourse(course?: MonoCourse): course is MonoCourse {
-        return course !== undefined;
     }
 }

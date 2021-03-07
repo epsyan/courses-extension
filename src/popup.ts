@@ -1,7 +1,6 @@
 import { getHtml, toggleLoader } from './util/render.util.js';
 
-const courseController = chrome.extension.getBackgroundPage()?.window
-    .courseController;
+const courseController = chrome.extension.getBackgroundPage()?.window.courseController;
 
 const fetchCourse = courseController?.fetchCourse.bind(courseController);
 

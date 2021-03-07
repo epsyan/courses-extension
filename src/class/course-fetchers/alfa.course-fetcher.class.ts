@@ -7,21 +7,18 @@ export class AlfaBankCourseFetcher extends CourseFetcherClass {
     url = 'http:localhost:8080/https://alfabank.ua'; // TODO: move to env
 
     async fetchCourse(): Promise<Course | void> {
-        const response = await fetch(this.url);
+        const response = await this.fetchAndCheckResponse();
+        const html = await response.text();
+        const courses = this.extractCourses(html);
 
-        if (this.checkResponse(response)) {
-            const html = await response.text();
-            const courses = this.extractCourses(html);
-
-            if (courses) {
-                return this.createCourseResponse(courses);
-            }
+        if (courses) {
+            return this.createCourseResponse(courses);
         }
+
+        this.throwFetchError('no courses found');
     }
 
-    private extractCourses(
-        html: string
-    ): Pick<Course, 'buyCourse' | 'sellCourse'> | void {
+    private extractCourses(html: string): Pick<Course, 'buyCourse' | 'sellCourse'> | void {
         const courses = [...html.matchAll(/class="rate-number"/g)]
             .map(({ index }) => index)
             .filter((index): index is number => index !== undefined)
@@ -33,7 +30,5 @@ export class AlfaBankCourseFetcher extends CourseFetcherClass {
                 sellCourse: +courses[9][0],
             };
         }
-
-        this.throwFetchError('no courses found');
     }
 }

@@ -1,4 +1,5 @@
 import { Course } from '../interface/course.interface';
+import { rParseFloat } from '../util/utils.js';
 
 export abstract class CourseFetcherClass {
     abstract name: string;
@@ -7,11 +8,10 @@ export abstract class CourseFetcherClass {
 
     abstract fetchCourse(): Promise<Course | void>;
 
-    async createCourseResponse(
-        courseData: Pick<Course, 'sellCourse' | 'buyCourse'>
-    ): Promise<Course> {
+    async createCourseResponse(courseData: Pick<Course, 'sellCourse' | 'buyCourse'>): Promise<Course> {
         return {
-            ...courseData,
+            buyCourse: rParseFloat(courseData.buyCourse),
+            sellCourse: rParseFloat(courseData.sellCourse),
             name: this.name,
             icon: this.icon,
         };
@@ -21,11 +21,13 @@ export abstract class CourseFetcherClass {
         throw new Error(`%c${this.name} %cFetch Failed: ${text}`);
     }
 
-    checkResponse(response: Response): boolean {
+    async fetchAndCheckResponse(): Promise<Response> {
+        const response = await fetch(this.url);
+
         if (!response.ok) {
             this.throwFetchError(`status ${response.status} given`);
         }
 
-        return true;
+        return response;
     }
 }

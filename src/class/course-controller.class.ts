@@ -6,36 +6,21 @@ import { CourseFetcherClass } from './course-fetcher.class.js';
 const POLL_TIMEOUT = 1000 * 60 * 10;
 
 export class CourseController {
-    constructor(
-        private courseFetchers: CourseFetcherClass[],
-        private currentCourse = 0
-    ) {}
+    constructor(private courseFetchers: CourseFetcherClass[], private currentCourse = 0) {}
 
     async fetchCourse(): Promise<Course[]> {
-        const settledPromises = await Promise.allSettled(
-            this.courseFetchers.map((fetcher) => fetcher.fetchCourse())
-        );
+        const settledPromises = await Promise.allSettled(this.courseFetchers.map((fetcher) => fetcher.fetchCourse()));
         const fulfilledPromises = settledPromises
-            .filter(
-                (promise): promise is PromiseFulfilledResult<Course> =>
-                    promise.status === 'fulfilled'
-            )
+            .filter((promise): promise is PromiseFulfilledResult<Course> => promise.status === 'fulfilled')
             .map(({ value }) => ({ ...value }))
             .sort(({ sellCourse: a }, { sellCourse: b }) => a - b);
 
         const rejectedPromises = settledPromises.filter(
-            (promise): promise is PromiseRejectedResult =>
-                promise.status === 'rejected'
+            (promise): promise is PromiseRejectedResult => promise.status === 'rejected'
         );
 
-        this.processRejectedCourses(
-            rejectedPromises,
-            fulfilledPromises.length > 0
-        );
-        this.processFulfilledCourses(
-            fulfilledPromises,
-            rejectedPromises.length > 0
-        );
+        this.processRejectedCourses(rejectedPromises, fulfilledPromises.length > 0);
+        this.processFulfilledCourses(fulfilledPromises, rejectedPromises.length > 0);
 
         return fulfilledPromises;
     }
@@ -51,20 +36,14 @@ export class CourseController {
         }
     }
 
-    processFulfilledCourses(
-        courses: Course[],
-        isRejectedPromisesExist: boolean
-    ): void {
+    processFulfilledCourses(courses: Course[], isRejectedPromisesExist: boolean): void {
         if (courses.length === 0) return;
 
         courses.forEach(this.logCourse.bind(this)); // TODO: why bind?
         this.setCourse(courses[0], isRejectedPromisesExist);
     }
 
-    processRejectedCourses(
-        rejectedCourses: PromiseRejectedResult[],
-        isFulfilledPromisesExist: boolean
-    ): void {
+    processRejectedCourses(rejectedCourses: PromiseRejectedResult[], isFulfilledPromisesExist: boolean): void {
         rejectedCourses.forEach(({ reason }) => {
             console.log(reason.message, 'color: red', 'color: black');
         });
@@ -74,13 +53,9 @@ export class CourseController {
         }
     }
 
-    setCourse(
-        { sellCourse, name, icon }: Course,
-        isRejectedPromisesExist: boolean
-    ): void {
+    setCourse({ sellCourse, name, icon }: Course, isRejectedPromisesExist: boolean): void {
         if (sellCourse === this.currentCourse) return;
-        const badgeColor =
-            sellCourse > this.currentCourse ? RED_COLOR : GREEN_COLOR;
+        const badgeColor = sellCourse > this.currentCourse ? RED_COLOR : GREEN_COLOR;
         const circleColor = isRejectedPromisesExist ? '#ef0000' : '#00bc00';
 
         console.log(`Change of course! ${name} with ${sellCourse}`);

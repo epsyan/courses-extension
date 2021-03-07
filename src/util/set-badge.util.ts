@@ -5,18 +5,11 @@ const ARC_CENTER_X = 50;
 const ARC_CENTER_Y = 15;
 const ARC_RADIUS = 10;
 
-export const setBadge = (
-    text: string,
-    color: string,
-    iconSrc: string,
-    circleColor: string
-): void => {
+export const setBadge = (text: string, color: string, iconSrc: string, circleColor: string): void => {
     chrome.browserAction.setBadgeText({ text });
     chrome.browserAction.setBadgeBackgroundColor({ color });
 
-    drawCanvas(iconSrc, circleColor, (imageData) =>
-        chrome.browserAction.setIcon({ imageData })
-    );
+    drawCanvas(iconSrc, circleColor, (imageData) => chrome.browserAction.setIcon({ imageData }));
 };
 
 const drawCanvas = (iconSrc: string, circleColor: string, cb: DrawCanvasCb) => {

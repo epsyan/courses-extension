@@ -5,7 +5,14 @@ const ARC_CENTER_X = 50;
 const ARC_CENTER_Y = 15;
 const ARC_RADIUS = 10;
 
-export const setBadge = (text: string, color: string, iconSrc: string, circleColor: string): void => {
+type BadgeConfig = {
+    text: string;
+    color: string;
+    iconSrc: string;
+    circleColor: string;
+};
+
+export const setBadge = ({ text, color, iconSrc, circleColor }: BadgeConfig): void => {
     chrome.browserAction.setBadgeText({ text });
     chrome.browserAction.setBadgeBackgroundColor({ color });
 

@@ -17,13 +17,13 @@ describe('courseController class tests', () => {
 
     it('should poll course', async () => {
         expect.assertions(2);
-        jest.spyOn(instance, 'fetchCourse').mockImplementation();
+        jest.spyOn(instance, 'fetchCourses').mockImplementation();
 
         await instance.pollCourse();
-        expect(instance.fetchCourse).toBeCalledTimes(1);
+        expect(instance.fetchCourses).toBeCalledTimes(1);
 
         jest.runOnlyPendingTimers();
-        expect(instance.fetchCourse).toBeCalledTimes(2);
+        expect(instance.fetchCourses).toBeCalledTimes(2);
     });
 
     it('should throw from poll course and rerun polling', async () => {
@@ -33,7 +33,7 @@ describe('courseController class tests', () => {
 
         jest.spyOn(console, 'error').mockImplementation();
         jest.spyOn(console, 'log').mockImplementation();
-        jest.spyOn(instance, 'fetchCourse').mockImplementation(() => {
+        jest.spyOn(instance, 'fetchCourses').mockImplementation(() => {
             throw mockError;
         });
 
@@ -42,18 +42,17 @@ describe('courseController class tests', () => {
         expect(console.log).toBeCalledWith(mockError);
 
         jest.runOnlyPendingTimers();
-        expect(instance.fetchCourse).toBeCalledTimes(2);
+        expect(instance.fetchCourses).toBeCalledTimes(2);
     });
 
+    // TODO: redesign
     it('should fetchCourses', async () => {
         const mockProcessRejectedCourses = jest.fn();
         const mockProcessFulfilledCourses = jest.fn();
 
         mockFetchCourse.mockReturnValue(mockCourses[0]);
-        jest.spyOn(instance, 'processRejectedCourses').mockImplementation(mockProcessRejectedCourses);
-        jest.spyOn(instance, 'processFulfilledCourses').mockImplementation(mockProcessFulfilledCourses);
 
-        const courses = await instance.fetchCourse();
+        const courses = await instance.fetchCourses();
 
         expect(mockFetchCourse).toBeCalledTimes(1);
         expect(mockProcessFulfilledCourses).toBeCalledWith([mockCourses[0]], false);
@@ -61,15 +60,12 @@ describe('courseController class tests', () => {
         expect(courses).toEqual([mockCourses[0]]);
     });
 
+    // TODO: redesign
     it('should process fulfilled courses', () => {
         const mockIsRejectedExist = false;
 
-        jest.spyOn(instance, 'logCourse').mockImplementation();
-        jest.spyOn(instance, 'setCourse').mockImplementation();
+        jest.spyOn(instance, 'setCurrentCourse').mockImplementation();
 
-        instance.processFulfilledCourses(mockCourses, mockIsRejectedExist);
-
-        expect(instance.logCourse).toBeCalledTimes(mockCourses.length);
-        expect(instance.setCourse).toBeCalledWith(mockCourses[0], mockIsRejectedExist);
+        expect(instance.setCurrentCourse).toBeCalledWith(mockCourses[0], mockIsRejectedExist);
     });
 });

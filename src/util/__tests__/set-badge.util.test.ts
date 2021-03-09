@@ -15,10 +15,10 @@ describe('setBadge util tests', () => {
     it('should change badge text, color and icon', () => {
         const mockTxt = 'mockTxt';
         const mockColor = '#ccc';
-        const iconSrc = 'icon.src';
-        const mockIconColor = '#fff';
+        const mockIconSrc = 'icon.src';
+        const mockCircleColor = '#fff';
 
-        setBadge(mockTxt, mockColor, iconSrc, mockIconColor);
+        setBadge({ text: mockTxt, color: mockColor, iconSrc: mockIconSrc, circleColor: mockCircleColor });
 
         expect(global.chrome.browserAction.setBadgeText).toBeCalledWith({ text: mockTxt });
         expect(global.chrome.browserAction.setBadgeBackgroundColor).toBeCalledWith({ color: mockColor });

@@ -4,8 +4,8 @@ import { rParseFloat } from './utils.js';
 const getCourseRow = ({ sellCourse, buyCourse, icon }: Course) =>
     `<tr>
 <td><img src="${icon}"/></td>
-<td>${sellCourse}</td>
-<td>${buyCourse}</td>
+<td>${rParseFloat(sellCourse)}</td>
+<td>${rParseFloat(buyCourse)}</td>
 <td>${rParseFloat(sellCourse - buyCourse)}</td>
 </tr>`;
 
@@ -24,6 +24,6 @@ export const getHtml = (courses: Course[]): string => {
     return `${headerRow}${courseRows}`;
 };
 
-export const toggleLoader = (show: boolean): void => {
-    toggleElem('#loader', show);
+export const toggleLoader = (show: boolean, selector = '#loader'): void => {
+    toggleElem(selector, show);
 };

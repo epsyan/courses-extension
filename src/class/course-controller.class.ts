@@ -2,6 +2,8 @@ import { COIN_SOUND, GREEN_COLOR, NA_ICON, RED_COLOR } from '../const.js';
 import { setBadge } from '../util/set-badge.util.js';
 import { Course } from '../interface/course.interface';
 import { CourseFetcherClass } from './course-fetcher.class.js';
+import { getTodayDateTime } from '../util/utils.js';
+import { getCoursesFromPromises, zipSettledPromises } from '../util/promise.util.js';
 
 const POLL_TIMEOUT = 1000 * 60 * 10;
 
@@ -10,19 +12,13 @@ export class CourseController {
 
     async fetchCourse(): Promise<Course[]> {
         const settledPromises = await Promise.allSettled(this.courseFetchers.map((fetcher) => fetcher.fetchCourse()));
-        const fulfilledPromises = settledPromises
-            .filter((promise): promise is PromiseFulfilledResult<Course> => promise.status === 'fulfilled')
-            .map(({ value }) => ({ ...value }))
-            .sort(({ sellCourse: a }, { sellCourse: b }) => a - b);
-
-        const rejectedPromises = settledPromises.filter(
-            (promise): promise is PromiseRejectedResult => promise.status === 'rejected'
-        );
+        const [fulfilledPromises, rejectedPromises] = zipSettledPromises(settledPromises);
+        const courses = getCoursesFromPromises(fulfilledPromises);
 
         this.processRejectedCourses(rejectedPromises, fulfilledPromises.length > 0);
-        this.processFulfilledCourses(fulfilledPromises, rejectedPromises.length > 0);
+        this.processFulfilledCourses(courses, rejectedPromises.length > 0);
 
-        return fulfilledPromises;
+        return courses;
     }
 
     async pollCourse(): Promise<void> {
@@ -39,7 +35,15 @@ export class CourseController {
     processFulfilledCourses(courses: Course[], isRejectedPromisesExist: boolean): void {
         if (courses.length === 0) return;
 
-        courses.forEach(this.logCourse);
+        const [date, time] = getTodayDateTime();
+
+        courses.forEach(({ sellCourse, name }) => {
+            console.group(name);
+            console.log(`Time: ${date} ${time}`);
+            console.log(`New course: ${sellCourse}`);
+            console.groupEnd();
+        });
+
         this.setCourse(courses[0], isRejectedPromisesExist);
     }
 
@@ -55,6 +59,7 @@ export class CourseController {
 
     setCourse({ sellCourse, name, icon }: Course, isRejectedPromisesExist: boolean): void {
         if (sellCourse === this.currentCourse) return;
+
         const badgeColor = sellCourse > this.currentCourse ? RED_COLOR : GREEN_COLOR;
         const circleColor = isRejectedPromisesExist ? '#ef0000' : '#00bc00';
 
@@ -62,17 +67,9 @@ export class CourseController {
         console.log(`old course: ${this.currentCourse}`);
 
         this.currentCourse = sellCourse;
+
         COIN_SOUND.play();
 
         setBadge(sellCourse.toString(), badgeColor, icon, circleColor);
-    }
-
-    logCourse({ name, sellCourse }: Course): void {
-        const dateTime = `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
-
-        console.group(name);
-        console.log(`Time: ${dateTime}`);
-        console.log(`New course: ${sellCourse}`);
-        console.groupEnd();
     }
 }

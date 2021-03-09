@@ -1,15 +1,7 @@
+import './../../mock/chrome.mock';
 import { setBadge } from '../set-badge.util';
 
 describe('setBadge util tests', () => {
-    global.chrome = {
-        ...global.chrome,
-        browserAction: {
-            ...global.chrome?.browserAction,
-            setBadgeText: jest.fn(),
-            setBadgeBackgroundColor: jest.fn(),
-            setIcon: jest.fn(),
-        },
-    };
     HTMLCanvasElement.prototype.getContext = jest.fn();
 
     it('should change badge text, color and icon', () => {

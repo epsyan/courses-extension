@@ -1,16 +1,15 @@
 import { getHtml, toggleLoader } from './util/render.util.js';
 
 const courseController = chrome.extension.getBackgroundPage()?.window.courseController;
+const fetchCourses = courseController?.fetchCourses.bind(courseController);
 
-const fetchCourse = courseController?.fetchCourse.bind(courseController);
-
-if (!fetchCourse) {
+if (!fetchCourses) {
     throw new Error('No Course Controller found');
 }
 
 (async () => {
     try {
-        const courses = await fetchCourse();
+        const courses = await fetchCourses();
         const tableElement = document.querySelector('table');
 
         if (tableElement) {

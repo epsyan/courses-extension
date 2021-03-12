@@ -1,11 +1,10 @@
 import { Course } from '../../interface/course.interface';
 import { CourseFetcherClass } from '../course-fetcher.class.js';
-import { CORS_ANYWHERE_URL } from '../../const.js';
 
 export class AlfaBankCourseFetcher extends CourseFetcherClass {
     name = 'AlfaBank';
     icon = '../public/asset/alfa.png';
-    url = `${CORS_ANYWHERE_URL}https://alfabank.ua`; // TODO: move to env
+    url = `${config.corsAnywhereUrl}https://alfabank.ua`; // TODO: move to env
 
     async fetchCourse(): Promise<Course | void> {
         const response = await this.fetchAndCheckResponse();

@@ -1,11 +1,11 @@
 import { CourseFetcherClass } from '../course-fetcher.class.js';
 import { Course } from '../../interface/course.interface';
 import { isDefined } from '../../util/utils.js';
-import { CORS_ANYWHERE_URL, USD_CURRENCY_CODE } from '../../const.js';
+import { USD_CURRENCY_CODE } from '../../const.js';
 
 export class UniversalBankCourseFetcher extends CourseFetcherClass {
     name = 'UniversalBank';
-    url = `${CORS_ANYWHERE_URL}https://www.universalbank.com.ua`;
+    url = `${config.corsAnywhereUrl}https://www.universalbank.com.ua`;
     icon = '../public/asset/universal.png';
 
     async fetchCourse(): Promise<Course | void> {

@@ -1,4 +1,4 @@
-import { COIN_SOUND, COLORS, NA_ICON } from '../const.js';
+import { COLORS, NA_ICON } from '../const.js';
 import { setBadge } from '../util/set-badge.util.js';
 import { Course } from '../interface/course.interface';
 import { CourseFetcherClass } from './course-fetcher.class.js';
@@ -6,11 +6,13 @@ import { getCoursesFromPromises, zipSettledPromises } from '../util/promise.util
 import { Logger } from './logger.class.js';
 
 const POLL_TIMEOUT = 1000 * 60 * 10;
+const COIN_SOUND = new Audio(chrome.runtime.getURL('public/asset/coin.mp3'));
 
 export class CourseController {
     constructor(private courseFetchers: CourseFetcherClass[], private currentCourse = 0) {}
 
     async fetchCourses(): Promise<Course[]> {
+        console.log(this.courseFetchers);
         const settledPromises = await Promise.allSettled(this.courseFetchers.map((fetcher) => fetcher.fetchCourse()));
         const [fulfilledPromises, rejectedPromises] = zipSettledPromises(settledPromises);
         const courses = getCoursesFromPromises(fulfilledPromises);

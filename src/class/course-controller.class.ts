@@ -12,7 +12,6 @@ export class CourseController {
     constructor(private courseFetchers: CourseFetcherClass[], private currentCourse = 0) {}
 
     async fetchCourses(): Promise<Course[]> {
-        console.log(this.courseFetchers);
         const settledPromises = await Promise.allSettled(this.courseFetchers.map((fetcher) => fetcher.fetchCourse()));
         const [fulfilledPromises, rejectedPromises] = zipSettledPromises(settledPromises);
         const courses = getCoursesFromPromises(fulfilledPromises);

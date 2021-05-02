@@ -1,20 +1,17 @@
-import { getHtml, toggleLoader } from './util/render.util.js';
+import { renderChart, renderTable, toggleLoader } from './util/render.util.js';
+import { getMethodFromBackgroundPage } from './util/chrome.util.js';
 
-const courseController = chrome.extension.getBackgroundPage()?.window.courseController;
-const fetchCourses = courseController?.fetchCourses.bind(courseController);
-
-if (!fetchCourses) {
-    throw new Error('No Course Controller found');
-}
+const fetchCourses = getMethodFromBackgroundPage('courseController', 'fetchCourses');
+const fetchMinfin = getMethodFromBackgroundPage('minfinController', 'fetch');
 
 (async () => {
     try {
-        const courses = await fetchCourses();
+        const [courses, minfinData] = await Promise.all([fetchCourses(), fetchMinfin()]);
         const tableElement = document.querySelector('table');
+        const chartElement = document.querySelector('.chart');
 
-        if (tableElement) {
-            tableElement.innerHTML = getHtml(courses);
-        }
+        tableElement && renderTable(tableElement, courses);
+        chartElement && renderChart(chartElement, minfinData);
     } catch (e) {
         console.error(e);
     } finally {

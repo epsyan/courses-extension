@@ -4,10 +4,16 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href='popup-styles.css'>
+
+    <script src='https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js'></script>
     <script defer type='module' src='../dist/popup.js'></script>
 </head>
 <body>
     <div id="loader">Loading...</div>
-    <table id="table"></table>
+
+    <div class="layout">
+        <table id="table"></table>
+        <div class="chart"></div>
+    </div>
 </body>
 </html>

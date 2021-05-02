@@ -17,7 +17,7 @@ export class OtpCourseFetcher extends CourseFetcherClass {
     icon = '../public/asset/otp.jpeg';
 
     async fetchCourse(): Promise<Course | void> {
-        this.url = this.getTodayApiUrl();
+        this.url = OtpCourseFetcher.getTodayApiUrl();
 
         const response = await this.fetchAndCheckResponse();
         const responseJson: OTPCourse = await response.json();
@@ -33,7 +33,7 @@ export class OtpCourseFetcher extends CourseFetcherClass {
         this.throwFetchError('No course found');
     }
 
-    private getTodayApiUrl(): string {
+    private static getTodayApiUrl(): string {
         const [todayDate] = getTodayDateTime();
 
         return `${window.config.corsAnywhereUrl}https://ru.otpbank.com.ua/local/components/otp/utils.exchange_rate_arc/exchange_rate_by_date.php?curr_date=%d%&ib_code=otp_bank_currency_rates`.replace(

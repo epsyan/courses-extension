@@ -13,5 +13,7 @@
     "default_icon": {
       "16": "public/asset/icon-16.png"
     }
-  }
+  },
+
+  "content_security_policy": "script-src 'self' https://unpkg.com; object-src 'self'"
 }

@@ -6,6 +6,7 @@ import { PrivatCourseFetcher } from './class/course-fetchers/privat.course-fetch
 import { OtpCourseFetcher } from './class/course-fetchers/otp.course-fetcher.class.js';
 import { NBUCourseFetcher } from './class/course-fetchers/nbu.course-fetcher.class.js';
 import { CourseFetcherClass } from './class/course-fetcher.class.js';
+import { MinfinController } from './class/minfin-controller.class.js';
 
 import { ENV } from './env.js';
 import { getConfig } from './config.js';
@@ -22,5 +23,6 @@ const courseFetchers = [
 ].filter((f): f is CourseFetcherClass => f instanceof CourseFetcherClass);
 
 window.courseController = new CourseController(courseFetchers);
+window.minfinController = new MinfinController();
 
 window.courseController.pollCourse();
